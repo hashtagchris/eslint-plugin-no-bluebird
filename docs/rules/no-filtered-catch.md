@@ -1,35 +1,36 @@
-# Prevent filtered `catch` function calls (`no-filtered-catch`)
+# Prevent filtered `catch` function calls (`no-bluebird/no-filtered-catch`)
+
+<!-- end auto-generated rule header -->
 
 Please describe the origin of the rule here.
 
 ## Rule Details
 
-This rule aims to...
+This rule aims to detect `catch` methods that are incompatible with native promises.
 
 Examples of **incorrect** code for this rule:
 
 ```js
-
-// fill me in
-
+aPromise
+.catch(NotFoundError, err => null)
 ```
 
 Examples of **correct** code for this rule:
 
 ```js
-
-// fill me in
-
+aPromise
+.catch(err => {
+    if (err instanceof NotFoundError) {
+        return null
+    }
+    throw err
+})
 ```
-
-### Options
-
-If there are any options, describe them here. Otherwise, delete this section.
 
 ## When Not To Use It
 
-Give a short description of when it would be appropriate to turn off this rule.
+When you're confident your code and dependencies are returning bluebird promises, not native promises.
 
 ## Further Reading
 
-If there are other links that describe the issue this rule addresses, please include them here in a bulleted list.
+* http://bluebirdjs.com/docs/api/catch.html#filtered-catch

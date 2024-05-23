@@ -52,7 +52,11 @@ TODO: Run eslint-doc-generator to generate the configs list (or delete this sect
 ## Rules
 
 <!-- begin auto-generated rules list -->
-TODO: Run eslint-doc-generator to generate the rules list.
+
+| Name                                                 | Description                             |
+| :--------------------------------------------------- | :-------------------------------------- |
+| [no-filtered-catch](docs/rules/no-filtered-catch.md) | Prevent filtered `catch` function calls |
+
 <!-- end auto-generated rules list -->
 
 

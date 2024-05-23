@@ -19,13 +19,63 @@ const rule = require("../../../lib/rules/no-filtered-catch"),
 const ruleTester = new RuleTester();
 ruleTester.run("no-filtered-catch", rule, {
   valid: [
-    // give me some code that won't trigger a warning
+    {
+      // single argument catch method
+      code: "aPromise.catch(function(err) { if (err instanceof RangeError) { return 42 }; throw err })",
+    },
+    {
+      // zero argument catch method
+      code: "aPromise.catch()",
+    },
+    {
+      // try statement with catch block
+      code: "try { } catch (err) { }",
+    },
+    {
+      // other methods that accept multiple arguments, like `then`
+      code: "aPromise.then(function(res) { console.log(res) }, function(err) { console.log(err) })",
+    },
   ],
 
   invalid: [
     {
-      code: "_.catch(NotFoundError, err => null)",
-      errors: [{ message: "Fill me in.", type: "Me too" }],
+      code: "aPromise.catch(RangeError, function() { return 42 })",
+      errors: [{
+        message: "Use a single argument catch method compatible with native promises",
+        type: "MemberExpression"
+      }],
     },
+    {
+      code: "aPromise.catch({statusCode: 404}, function() { return null })",
+      errors: [{
+        message: "Use a single argument catch method compatible with native promises",
+        type: "MemberExpression"
+      }],
+    },
+    {
+      // multiple filters
+      code: "aPromise.catch(NotFoundError, {statusCode: 404}, function() { return null })",
+      errors: [{
+        message: "Use a single argument catch method compatible with native promises",
+        type: "MemberExpression"
+      }],
+    },
+    {
+      // chained catches
+      // it might be a lot of work to have autofix combine these into a single catch method
+      code: "aPromise.catch(RangeError, function() { return 42 }).catch({statusCode: 404}, function() { return null }).catch(function(err) { console.log(err) })",
+      errors: [
+        {
+          message: "Use a single argument catch method compatible with native promises",
+          type: "MemberExpression",
+          endColumn: 59,
+        },
+        {
+          message: "Use a single argument catch method compatible with native promises",
+          type: "MemberExpression",
+          endColumn: 15,
+        }
+      ],
+    }
   ],
 });
