@@ -42,14 +42,14 @@ ruleTester.run("no-filtered-catch", rule, {
       code: "aPromise.catch(RangeError, function() { return 42 })",
       errors: [{
         message: "Use a single argument catch method compatible with native promises",
-        type: "MemberExpression"
+        type: "CallExpression"
       }],
     },
     {
       code: "aPromise.catch({statusCode: 404}, function() { return null })",
       errors: [{
         message: "Use a single argument catch method compatible with native promises",
-        type: "MemberExpression"
+        type: "CallExpression"
       }],
     },
     {
@@ -57,23 +57,33 @@ ruleTester.run("no-filtered-catch", rule, {
       code: "aPromise.catch(NotFoundError, {statusCode: 404}, function() { return null })",
       errors: [{
         message: "Use a single argument catch method compatible with native promises",
-        type: "MemberExpression"
+        type: "CallExpression"
       }],
     },
     {
       // chained catches
       // it might be a lot of work to have autofix combine these into a single catch method
-      code: "aPromise.catch(RangeError, function() { return 42 }).catch({statusCode: 404}, function() { return null }).catch(function(err) { console.log(err) })",
+      code:
+`aPromise
+ .catch(RangeError, function() { return 42 })
+ .catch({statusCode: 404}, function() { return null })
+ .catch(function(err) { console.log(err) })`,
       errors: [
         {
           message: "Use a single argument catch method compatible with native promises",
-          type: "MemberExpression",
-          endColumn: 59,
+          type: "CallExpression",
+          line: 2,
+          column: 3,
+          endLine: 2,
+          endColumn: 46,
         },
         {
           message: "Use a single argument catch method compatible with native promises",
-          type: "MemberExpression",
-          endColumn: 15,
+          type: "CallExpression",
+          line: 3,
+          column: 3,
+          endLine: 3,
+          endColumn: 55,
         }
       ],
     }
