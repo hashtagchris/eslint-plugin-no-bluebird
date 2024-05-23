@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-no-bluebird",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Detect the use of bluebird and dependencies on its promise extensions",
   "keywords": [
     "eslint",
